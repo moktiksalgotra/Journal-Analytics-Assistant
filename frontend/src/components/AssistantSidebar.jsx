@@ -2,7 +2,6 @@
  * Claude-style left rail: New chat, grouped history, company branding footer.
  */
 import { LogOut, Menu, Pencil, UserCircle2 } from "lucide-react";
-import TaylorLogo from "../assets/Taylor_and_Francis.svg";
 
 const SECTION_LABELS = {
   today: "Today",
@@ -98,8 +97,8 @@ export function AssistantSidebar({
         ))}
       </div>
 
-      <div className="border-t border-journal-border p-3">
-        <div className="mb-3 flex items-center gap-2">
+      <div className="p-3">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onOpenProfile}
@@ -116,12 +115,6 @@ export function AssistantSidebar({
             <LogOut className="h-4 w-4" />
             Logout
           </button>
-        </div>
-        <div className="flex items-center gap-2.5 opacity-80">
-          <img src={TaylorLogo} alt="Taylor & Francis" className="h-5 w-auto grayscale" />
-          <span className="text-[11px] font-medium tracking-wide text-journal-muted">
-            Taylor &amp; Francis
-          </span>
         </div>
       </div>
     </aside>

@@ -250,6 +250,8 @@ export function AuthPage() {
           </p>
         </div>
       </footer>
+      {/* Bottom overscroll bleed */}
+      <div className="fixed bottom-0 left-0 -z-50 h-[50vh] w-full bg-black" />
     </div>
   );
 }
