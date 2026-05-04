@@ -89,10 +89,10 @@ export function AssistantComposer({
                   type="button"
                   onClick={handleVoiceToggle}
                   disabled={loading}
-                  className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-200 ${
+                  className={`flex h-9 w-9 items-center justify-center rounded-full border focus:outline-none focus:ring-0 transition-all duration-200 ${
                     isRecording 
                       ? "bg-red-500 border-red-500 text-white animate-pulse shadow-lg scale-110" 
-                      : "border-journal-clay/40 text-journal-clay hover:bg-journal-clay/10 hover:border-journal-clay"
+                      : "border-journal-clay/60 text-journal-clay hover:bg-journal-clay/10 hover:border-journal-clay focus:border-journal-clay"
                   }`}
                   title={isRecording ? "Stop recording" : "Start voice input"}
                 >
