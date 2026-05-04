@@ -99,6 +99,12 @@ def health_check():
     }
 
 
+@app.get("/")
+def root():
+    """Basic root endpoint for platform and browser checks."""
+    return {"service": "Journal Analytics Assistant API", "status": "ok"}
+
+
 @app.get("/sample-questions")
 def get_sample_questions():
     """Return a list of suggested analytical questions."""
