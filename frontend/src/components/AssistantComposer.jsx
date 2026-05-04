@@ -1,8 +1,11 @@
 import { 
   Loader2, 
-  ArrowUp
+  ArrowUp,
+  Mic,
+  Square
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useVoice } from "../hooks/useVoice";
 
 export function AssistantComposer({
   loading,
@@ -11,11 +14,32 @@ export function AssistantComposer({
   isLanding = false,
 }) {
   const [input, setInput] = useState("");
+  const [baseText, setBaseText] = useState("");
   const inputRef = useRef(null);
+
+  const { isRecording, toggleRecording } = useVoice({
+    onTranscriptUpdate: (transcript) => {
+      const nextText = baseText ? `${baseText.trim()} ${transcript}` : transcript;
+      setInput(nextText);
+      
+      // Auto-resize on every transcript update
+      if (inputRef.current) {
+        inputRef.current.style.height = "auto";
+        inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
+      }
+    }
+  });
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  const handleVoiceToggle = () => {
+    if (!isRecording) {
+      setBaseText(input); // Save current input as base
+    }
+    toggleRecording();
+  };
 
   const dispatch = () => {
     const q = input.trim();
@@ -48,7 +72,7 @@ export function AssistantComposer({
                 dispatch();
               }
             }}
-            placeholder="How can I help you today?"
+            placeholder={isRecording ? "Listening..." : "How can I help you today?"}
             className="max-h-60 min-h-[100px] w-full resize-none bg-transparent px-6 py-5 text-[16px] leading-relaxed text-journal-ink outline-none placeholder:text-journal-muted/60"
           />
           
@@ -60,13 +84,31 @@ export function AssistantComposer({
 
             <div className="flex items-center gap-3">
               {/* Action Buttons */}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  disabled={loading || !input.trim()}
+                  onClick={handleVoiceToggle}
+                  disabled={loading}
+                  className={`flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200 ${
+                    isRecording 
+                      ? "bg-red-500 text-white animate-pulse shadow-lg scale-110" 
+                      : "bg-journal-border/10 text-journal-muted hover:bg-journal-border/20"
+                  }`}
+                  title={isRecording ? "Stop recording" : "Start voice input"}
+                >
+                  {isRecording ? (
+                    <Square className="h-4 w-4 fill-current" />
+                  ) : (
+                    <Mic className="h-5 w-5" />
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  disabled={loading || !input.trim() || isRecording}
                   onClick={dispatch}
                   className={`ml-1 flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200 ${
-                    input.trim() 
+                    input.trim() && !isRecording
                       ? "bg-journal-clay text-white shadow-sm scale-100 opacity-100" 
                       : "bg-journal-border/10 text-journal-muted/40 scale-95 opacity-50 cursor-not-allowed"
                   }`}

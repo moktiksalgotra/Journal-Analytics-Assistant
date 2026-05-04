@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Lato", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       colors: {
         surface: "#F3EEE5",

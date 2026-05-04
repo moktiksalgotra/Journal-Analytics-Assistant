@@ -9,13 +9,13 @@ import time
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from utils.chart_generator import build_chart
 from utils.db_manager import get_connection, initialize_database
-from utils.groq_client import get_groq_api_key
+from utils.groq_client import get_groq_api_key, get_groq_client
 from utils.sql_generator import generate_sql_from_question
 from utils.summarizer import summarize_results
 
@@ -122,6 +122,32 @@ def get_sample_questions():
             "Which journals had a rejection rate above 70% in Q1 2025?",
         ]
     }
+
+
+@app.post("/transcribe")
+async def transcribe_audio(file: UploadFile = File(...)):
+    """Transcribe audio file to text using Groq Whisper."""
+    if not get_groq_api_key():
+        raise HTTPException(status_code=500, detail="GROQ_API_KEY is missing.")
+
+    try:
+        client = get_groq_client()
+        
+        import io
+        content = await file.read()
+        audio_file = io.BytesIO(content)
+        audio_file.name = file.filename or "audio.webm"
+        
+        transcription = client.audio.transcriptions.create(
+            file=audio_file,
+            model="whisper-large-v3",
+            response_format="json",
+        )
+        
+        return {"text": transcription.text}
+    except Exception as e:
+        logger.error(f"Transcription failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
 
 
 @app.post("/ask", response_model=AskResponse)

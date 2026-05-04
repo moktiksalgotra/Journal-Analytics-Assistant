@@ -1,5 +1,5 @@
 /**
- * REST client for the FastAPI Journal Analytics Assistant backend.
+ * REST client for the FastAPI Annie backend.
  */
 import axios from "axios";
 
@@ -22,6 +22,11 @@ export async function getHealth() {
 export async function getSampleQuestions() {
   const { data } = await api.get("/sample-questions");
   return data;
+}export async function transcribeAudio(audioBlob) {
+  const formData = new FormData();
+  formData.append("file", audioBlob, "audio.webm");
+  const { data } = await api.post("/transcribe", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
 }
-
-

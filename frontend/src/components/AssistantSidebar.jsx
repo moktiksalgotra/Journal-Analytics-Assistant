@@ -1,8 +1,8 @@
 /**
  * Claude-style left rail: New chat, grouped history, company branding footer.
  */
-import { BarChart3, Menu, Pencil } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { LogOut, Menu, Pencil, UserCircle2 } from "lucide-react";
+import TaylorLogo from "../assets/Taylor_and_Francis.svg";
 
 const SECTION_LABELS = {
   today: "Today",
@@ -43,7 +43,16 @@ function HistoryRow({ conversation, active, onSelect, onDelete }) {
   );
 }
 
-export function AssistantSidebar({ grouped, activeId, onSelectConversation, onNewChat, onDeleteConversation, busy }) {
+export function AssistantSidebar({
+  grouped,
+  activeId,
+  onSelectConversation,
+  onNewChat,
+  onDeleteConversation,
+  onOpenProfile,
+  onLogout,
+  busy,
+}) {
   const sections = [
     { key: "today", rows: grouped.today },
     { key: "yesterday", rows: grouped.yesterday },
@@ -90,7 +99,30 @@ export function AssistantSidebar({ grouped, activeId, onSelectConversation, onNe
       </div>
 
       <div className="border-t border-journal-border p-3">
-        {/* Footer actions or branding can go here */}
+        <div className="mb-3 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onOpenProfile}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-journal-border bg-white px-2 py-2 text-[12px] font-medium text-journal-ink hover:bg-journal-panel"
+          >
+            <UserCircle2 className="h-4 w-4" />
+            Profile
+          </button>
+          <button
+            type="button"
+            onClick={onLogout}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-journal-border bg-white px-2 py-2 text-[12px] font-medium text-journal-ink hover:bg-journal-panel"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </button>
+        </div>
+        <div className="flex items-center gap-2.5 opacity-80">
+          <img src={TaylorLogo} alt="Taylor & Francis" className="h-5 w-auto grayscale" />
+          <span className="text-[11px] font-medium tracking-wide text-journal-muted">
+            Taylor &amp; Francis
+          </span>
+        </div>
       </div>
     </aside>
   );

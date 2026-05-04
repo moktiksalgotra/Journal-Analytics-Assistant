@@ -5,7 +5,7 @@
 @layer base {
   html, body {
     @apply text-journal-ink antialiased;
-    background-color: #f7f3ec;
+    background-color: #f7f6f3;
   }
 }
 

@@ -126,11 +126,18 @@ function UserBubble({ text, onNotify }) {
   );
 }
 
-function AssistantBubble({ message, onNotify, isLast }) {
-  const [showArtifacts, setShowArtifacts] = useState(!isLast);
+function AssistantBubble({ message, onNotify, isLast, shouldAnimate }) {
+  const [showArtifacts, setShowArtifacts] = useState(!isLast || !shouldAnimate);
   const [showSql, setShowSql] = useState(false);
   const bundle = message.bundle;
   const results = bundle.results || [];
+
+  useEffect(() => {
+    // Keep historical messages fully rendered when revisiting chat history.
+    if (!isLast || !shouldAnimate) {
+      setShowArtifacts(true);
+    }
+  }, [isLast, shouldAnimate]);
 
   const handleCopy = async () => {
     const text = [
@@ -175,7 +182,7 @@ function AssistantBubble({ message, onNotify, isLast }) {
                 <div className="font-medium text-journal-ink leading-relaxed">
                   <Typewriter 
                     text={bundle.summary} 
-                    isLast={isLast} 
+                    isLast={isLast && shouldAnimate}
                     onComplete={() => setShowArtifacts(true)} 
                   />
                 </div>
@@ -272,6 +279,7 @@ function AssistantBubble({ message, onNotify, isLast }) {
 
 export function AssistantChatThread({ messages, notify, loading }) {
   const bottomRef = useRef(null);
+  const now = Date.now();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -289,11 +297,18 @@ export function AssistantChatThread({ messages, notify, loading }) {
           {msg.role === "user" ? (
             <UserBubble text={msg.text} onNotify={notify} />
           ) : (
+            (() => {
+              const createdAtMs = new Date(msg.createdAt).getTime();
+              const isFreshMessage = Number.isFinite(createdAtMs) && now - createdAtMs < 10_000;
+              return (
             <AssistantBubble 
               message={msg} 
               onNotify={notify} 
-              isLast={index === messages.length - 1} 
+              isLast={index === messages.length - 1}
+              shouldAnimate={isFreshMessage}
             />
+              );
+            })()
           )}
         </motion.div>
       ))}

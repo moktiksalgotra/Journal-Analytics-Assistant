@@ -2,7 +2,7 @@
  * Main Journal Assistant Workspace.
  * Handles conversation state, API interaction, and layout transitions.
  */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react";
 
@@ -15,8 +15,9 @@ import { WELCOME_SUGGESTIONS } from "../constants/suggestions.js";
 import { useConversations } from "../hooks/useConversations.js";
 import { askQuestion } from "../services/api.js";
 import { getNowIso, mapApiToBundle } from "../utils/chatUtils.js";
+import TaylorLogo from "../assets/Taylor_and_Francis.svg";
 
-export function JournalAssistant({ pushToast }) {
+export function JournalAssistant({ profile, pushToast, onOpenProfile, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { byId, groupedSidebar, hydrated, deleteConversation, persist } = useConversations();
@@ -24,6 +25,7 @@ export function JournalAssistant({ pushToast }) {
   const [activeId, setActiveId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const handledSeedRef = useRef(null);
 
   // Helper to scroll to the bottom of the chat
   const scrollToBottom = () => {
@@ -125,7 +127,7 @@ export function JournalAssistant({ pushToast }) {
         }
       } catch (err) {
         const errorMessage = err?.response?.data?.detail || err?.message || "Connection error.";
-        
+
         const errorAssistantMessage = {
           id: crypto.randomUUID(),
           role: "assistant",
@@ -160,7 +162,8 @@ export function JournalAssistant({ pushToast }) {
   // Handle external seed questions (e.g. from landing or URL state)
   useEffect(() => {
     const seed = location.state?.seedQuestion;
-    if (hydrated && seed) {
+    if (hydrated && seed && handledSeedRef.current !== seed) {
+      handledSeedRef.current = seed;
       void handleQuestion(seed, { silent: true });
       navigate(".", { replace: true, state: {} });
     }
@@ -185,16 +188,14 @@ export function JournalAssistant({ pushToast }) {
         type="button"
         aria-label="Close menu"
         onClick={() => setMobileSidebarOpen(false)}
-        className={`fixed inset-0 z-30 bg-black/20 backdrop-blur-sm transition-opacity md:hidden ${
-          mobileSidebarOpen ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
+        className={`fixed inset-0 z-30 bg-black/20 backdrop-blur-sm transition-opacity md:hidden ${mobileSidebarOpen ? "opacity-100" : "pointer-events-none opacity-0"
+          }`}
       />
 
       {/* Sidebar (Responsive) */}
       <div
-        className={`fixed inset-y-0 left-0 z-40 h-full transition-transform md:static md:flex md:translate-x-0 ${
-          mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-40 h-full transition-transform md:static md:flex md:translate-x-0 ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <AssistantSidebar
           grouped={groupedSidebar}
@@ -202,6 +203,8 @@ export function JournalAssistant({ pushToast }) {
           onSelectConversation={handleSelectConversation}
           onNewChat={handleNewChat}
           onDeleteConversation={handleDeleteConversation}
+          onOpenProfile={onOpenProfile}
+          onLogout={onLogout}
           busy={loading}
         />
       </div>
@@ -217,13 +220,20 @@ export function JournalAssistant({ pushToast }) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="ml-2 font-semibold">Journal AI</span>
+          <div className="ml-3 flex items-center gap-2">
+            <img src={TaylorLogo} alt="T&F" className="h-6 w-auto" />
+            <div className="flex flex-col leading-tight">
+              <span className="text-sm font-bold tracking-tight">Annie</span>
+              <span className="text-[8px] font-medium tracking-wider text-journal-muted">by taylor & francis</span>
+            </div>
+          </div>
         </div>
 
         {/* Thread Container */}
         <div className={`flex-1 min-h-0 bg-journal-bg scrollbar-thin ${isWelcomeState ? 'overflow-hidden' : 'overflow-y-auto'}`}>
           {isWelcomeState ? (
             <AssistantWelcome
+              userName={profile?.fullName}
               suggestions={WELCOME_SUGGESTIONS}
               disabled={loading}
               onPickSuggestion={(q) => void handleQuestion(q)}

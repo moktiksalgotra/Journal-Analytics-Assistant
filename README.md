@@ -1,23 +1,23 @@
-# 📊 Journal Analytics Assistant
+# 📊 Annie - Journal Analytics Assistant
 
 > **The Executive Copilot for Journal Operations.** 
-> Empowering decision-makers with natural language insights, dynamic data visualizations, and automated SQL generation.
+> Empowering decision-makers with real-time voice insights, dynamic data visualizations, and automated SQL generation.
 
 ---
 
 ## 🌟 Overview
 
-The **Journal Analytics Assistant** is a full-stack executive copilot designed to bridge the gap between complex journal data and actionable insights. Built with a modern **React + FastAPI** architecture, it leverages Large Language Models (LLMs) to translate plain English questions into optimized SQL queries, providing instant narrative summaries and beautiful visualizations.
+**Annie** is a premium, full-stack executive copilot designed to bridge the gap between complex journal data and actionable insights. Built for **Taylor & Francis**, it leverages advanced LLMs and real-time speech processing to translate plain English (or spoken) questions into optimized SQL queries, providing instant narrative summaries and professional visualizations.
 
 ### ✨ Key Features
 
-*   **🗣️ Natural Language to SQL**: Ask complex questions like *"What's our revenue trend for the last 6 months?"* and watch as the assistant generates and executes the precise SQL query.
-*   **📈 Intelligent Visualizations**: Automatically renders the most appropriate chart (Bar, Line, Area, or Pie) based on the structure of the retrieved data.
+*   **🎙️ Real-Time Voice Integration**: Speak naturally and watch as Annie transcribes your words instantly into the chat input using high-performance Web Speech processing.
+*   **🗣️ Natural Language to SQL**: Ask complex questions like *"Which journals in Medicine had an acceptance rate above 60% in 2024?"* and get precise data answers.
+*   **📈 Intelligent Visualizations**: Automatically renders the most appropriate chart (Bar, Line, Area, or Pie) based on the structure of the retrieved results.
 *   **📝 Narrative Summaries**: Every query is accompanied by a professional, AI-generated executive summary that highlights key takeaways.
-*   **🔍 Data Transparency**: Full visibility into the generated SQL, execution timings, and row counts for complete trust and auditability.
-*   **💾 Local Session History**: All conversations are persisted locally, allowing you to pick up exactly where you left off.
-*   **📥 Professional Data Export**: One-click export of any result set to CSV for further analysis in Excel or other tools.
-*   **🎨 Premium UI/UX**: A sleek, Claude-inspired interface designed for clarity, speed, and executive use.
+*   **🔐 Secure Authentication**: Integrated with Firebase for secure Email and Google authentication.
+*   **👤 Profile Customization**: Personalized user settings with local persistence for names, roles, and preferences.
+*   **🎨 Premium UI/UX**: A sleek, modern interface inspired by Claude, designed for clarity, speed, and executive use.
 
 ---
 
@@ -25,16 +25,17 @@ The **Journal Analytics Assistant** is a full-stack executive copilot designed t
 
 ### **Frontend**
 *   **Framework**: [React](https://reactjs.org/) (Vite)
+*   **Authentication**: [Firebase Auth](https://firebase.google.com/)
+*   **Real-time STT**: [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition)
 *   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-*   **Animations**: [Framer Motion](https://www.framer.com/motion/)
 *   **Charts**: [Recharts](https://recharts.org/)
 *   **Icons**: [Lucide React](https://lucide.dev/)
 
 ### **Backend**
 *   **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10+)
-*   **LLM Engine**: [Groq Cloud](https://groq.com/) (Llama-3-70b-versatile)
-*   **Database**: [SQLite](https://www.sqlite.org/) (Synthetic journal data)
-*   **Security**: Read-only SQL execution and validation.
+*   **LLM Engine**: [Groq Cloud](https://groq.com/) (Llama-3.3-70b-versatile & Whisper-large-v3)
+*   **Database**: [SQLite](https://www.sqlite.org/) (Automated synthetic data generation)
+*   **Data Processing**: [Pandas](https://pandas.pydata.org/)
 
 ---
 
@@ -103,33 +104,26 @@ journal-ai-assistant/
 │   ├── app.py              # Main API entry point & routes
 │   ├── utils/
 │   │   ├── sql_generator.py # Groq LLM integration & prompt engineering
-│   │   ├── db_manager.py    # SQLite connection & security validation
-│   │   ├── chart_generator.py # Logic for automatic visualization selection
-│   │   └── summarizer.py    # Narrative insight generation logic
-│   └── database/           # SQLite database storage
+│   │   ├── db_manager.py    # SQLite connection & synthetic data logic
+│   │   ├── chart_generator.py # Automatic visualization selection
+│   │   └── summarizer.py    # Narrative insight generation
+│   └── database/           # SQLite database & data source
 ├── frontend/
 │   ├── src/
-│   │   ├── components/     # Atomic UI components (Composer, ChatThread, etc.)
-│   │   ├── pages/          # Main application layouts
-│   │   ├── hooks/          # Custom React hooks (Persistence, API state)
-│   │   └── assets/         # Static assets & brand logos
-│   └── tailwind.config.js  # Custom theme & design tokens
-└── .gitignore              # Production-ready git exclusions
+│   │   ├── components/     # UI components (Composer, ChatThread, Sidebar)
+│   │   ├── pages/          # Auth, Assistant, and Profile layouts
+│   │   ├── hooks/          # Custom hooks (Voice, Conversations)
+│   │   ├── services/       # API client logic
+│   │   └── utils/          # Auth storage and Firebase config
+│   └── tailwind.config.js  # Theme and design tokens
+└── .gitignore              # Project exclusions
 ```
-
----
-
-## 🔒 Security & Performance
-
-*   **SQL Safety**: The application uses a strict regex-based validation layer to ensure only `SELECT` statements are executed.
-*   **Optimized Queries**: Prompts are engineered to generate performant SQL that leverages existing indexes.
-*   **Lightweight Storage**: SQLite provides a zero-config, portable database experience perfect for internal analytics.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request or open an Issue for any bugs or feature requests.
+Contributions are welcome! Please feel free to submit a Pull Request or open an Issue.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -141,7 +135,7 @@ Contributions are welcome! Please feel free to submit a Pull Request or open an 
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License.
 
 ---
 

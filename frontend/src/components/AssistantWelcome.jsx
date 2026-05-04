@@ -3,13 +3,13 @@
  * Displays the initial greeting, search composer, and suggested questions.
  */
 import { AssistantComposer } from "./AssistantComposer.jsx";
-import { ClaudeLogo } from "./ClaudeLogo.jsx";
 import TaylorLogo from "../assets/Taylor_and_Francis.svg";
 
-export function AssistantWelcome({ suggestions, onPickSuggestion, disabled }) {
+export function AssistantWelcome({ userName, suggestions, onPickSuggestion, disabled }) {
   // Determine time-based greeting
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const displayName = userName || "User";
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-between bg-journal-bg px-6 py-8 overflow-hidden">
@@ -18,9 +18,9 @@ export function AssistantWelcome({ suggestions, onPickSuggestion, disabled }) {
         {/* Header Section */}
         <div className="mb-10 flex flex-col items-center text-center">
           <div className="mb-4 flex items-center justify-center gap-4">
-            <ClaudeLogo className="h-10 w-10 text-journal-clay md:h-12 md:w-12" />
-            <h1 className="text-4xl font-medium tracking-tight text-journal-ink md:text-5xl" style={{ fontFamily: 'Georgia, serif' }}>
-              {greeting}, Moktik
+            <img src={TaylorLogo} alt="Taylor & Francis" className="h-10 w-auto md:h-12" />
+            <h1 className="text-4xl font-medium tracking-tight text-journal-ink md:text-5xl">
+              {greeting}, {displayName}
             </h1>
           </div>
         </div>
@@ -55,17 +55,6 @@ export function AssistantWelcome({ suggestions, onPickSuggestion, disabled }) {
         </div>
       </div>
 
-      {/* Background Branding */}
-      <footer className="mt-8 w-full select-none pointer-events-none flex items-center justify-center gap-6 md:gap-10 opacity-70">
-        <img
-          src={TaylorLogo}
-          alt="Taylor & Francis"
-          className="h-[clamp(30px,7vw,110px)] w-auto opacity-20 grayscale"
-        />
-        <h2 className="text-center text-[clamp(24px,6vw,120px)] font-black tracking-tighter text-journal-muted/20 leading-none whitespace-nowrap">
-          Taylor & Francis
-        </h2>
-      </footer>
     </div>
   );
 }
